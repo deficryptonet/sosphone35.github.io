@@ -1628,13 +1628,132 @@
 <script>
 const AI_WA = "https://wa.me/33777895935?text=";
 
-const AI_SYSTEM = `Tu es l'assistant de SOS Phone 35, une boutique de réparation de smartphones, tablettes et ordinateurs à Rennes.
-Tu dois uniquement répondre aux questions liées à la réparation d'appareils électroniques (smartphones, tablettes, ordinateurs, coques, accessoires).
-Si la question ne concerne pas la réparation ou les accessoires, réponds poliment que tu ne peux traiter que les demandes liées à la réparation.
-Réponds toujours en français, de manière claire, concise et rassurante.
-À la fin de chaque réponse technique, propose systématiquement un devis WhatsApp ou un appel au 07 77 89 59 35.
-Pour les coques et accessoires, indique toujours que les stocks sont disponibles en boutique et qu'il faut appeler ou passer.
-Format: texte court (3-4 phrases max), puis une ligne d'action avec lien WhatsApp.`;
+// ── Règles de réponse intelligentes ──
+const AI_RULES = [
+  {
+    keys: ['écran','screen','fissuré','cassé','brisé','craquelé','tactile','affichage','noir','lcd','oled'],
+    response: `<strong>Écran cassé ou fissuré</strong> 📱<br><br>
+C'est l'une de nos réparations les plus fréquentes ! Nous remplaçons les écrans LCD et OLED pour <strong>iPhone, Samsung, Huawei, Xiaomi</strong> et toutes les autres marques.<br><br>
+⏱️ Délai moyen : <strong>20 à 30 minutes</strong><br>
+✅ Pièces de qualité premium disponibles en boutique<br>
+💰 Tarif selon modèle — devis gratuit et sans engagement<br><br>
+Envoyez-nous votre modèle exact sur WhatsApp pour recevoir un devis immédiat.`
+  },
+  {
+    keys: ['batterie','battery','autonomie','décharge','s'éteint','charge vite','lent','ralentit'],
+    response: `<strong>Problème de batterie</strong> 🔋<br><br>
+Une batterie défaillante se reconnaît facilement : autonomie réduite, téléphone qui s'éteint sans raison, ou qui ralentit. Nous remplaçons les batteries de toutes marques.<br><br>
+⏱️ Délai : <strong>15 à 20 minutes</strong><br>
+✅ Batteries certifiées disponibles en stock<br>
+💡 Tip : si votre iPhone ralentit, Apple active une limitation automatique quand la batterie est usée.<br><br>
+Dites-nous votre modèle sur WhatsApp pour un devis rapide.`
+  },
+  {
+    keys: ['charge','chargeur','câble','connecteur','usb','lightning','prise','brancher','rechargement'],
+    response: `<strong>Problème de charge</strong> ⚡<br><br>
+Votre téléphone ne charge plus ou charge lentement ? Le connecteur USB-C, Lightning ou micro-USB est peut-être endommagé ou encrassé.<br><br>
+⏱️ Délai : <strong>20 à 45 minutes</strong><br>
+✅ Première étape : on nettoie le port gratuitement en boutique<br>
+🔧 Si remplacement nécessaire, devis gratuit sur place<br><br>
+Passez directement en boutique ou contactez-nous pour un pré-diagnostic.`
+  },
+  {
+    keys: ['logiciel','software','bloqué','planté','redémarre','bug','virus','réinitialisation','reset','ios','android','mise à jour','update'],
+    response: `<strong>Problème logiciel</strong> 💻<br><br>
+Téléphone bloqué, qui redémarre en boucle, ou infecté par un virus ? Nos techniciens diagnostiquent et résolvent les problèmes logiciels sur iOS et Android.<br><br>
+🔍 Diagnostic gratuit en boutique<br>
+⏱️ Délai : variable selon le problème<br>
+✅ Réinitialisation, mise à jour, suppression de virus<br>
+⚠️ Pensez à sauvegarder vos données avant de venir.<br><br>
+Décrivez-nous le problème sur WhatsApp pour qu'on vous oriente.`
+  },
+  {
+    keys: ['ordinateur','pc','mac','laptop','portable','écran bleu','lent','disque dur','mémoire','ram','windows'],
+    response: `<strong>Dépannage ordinateur</strong> 🖥️<br><br>
+Nous intervenons sur PC Windows et Mac : ordinateur lent, écran bleu, virus, remplacement disque dur, augmentation RAM, et bien plus.<br><br>
+🔍 Diagnostic gratuit<br>
+⏱️ Délai : selon diagnostic, souvent le jour même<br>
+✅ Sauvegarde de données possible<br>
+💡 Apportez votre ordinateur directement en boutique.<br><br>
+Contactez-nous pour décrire le problème et estimer le délai.`
+  },
+  {
+    keys: ['coque','housse','protège','protection','verre trempé','film','accessoire','câble','écouteur','chargeur rapide'],
+    response: `<strong>Coques & Accessoires</strong> 🛍️<br><br>
+Nous avons un large stock en boutique pour toutes les marques :<br><br>
+📦 Coques silicone, folio, résistante, transparente<br>
+🔒 Verres trempés pour smartphones et tablettes<br>
+🔌 Chargeurs, câbles (USB-C, Lightning, micro-USB)<br>
+🎧 Écouteurs et supports voiture<br><br>
+<strong>Stock disponible en boutique</strong> — venez directement ou appelez pour vérifier la disponibilité de votre modèle.`
+  },
+  {
+    keys: ['iphone','apple','ios'],
+    response: `<strong>Réparation iPhone</strong> 🍎<br><br>
+Nous réparons toutes les générations d'iPhone (iPhone 6 jusqu'aux derniers modèles) :<br><br>
+📱 Remplacement écran (LCD/OLED/Super Retina)<br>
+🔋 Remplacement batterie<br>
+⚡ Réparation connecteur Lightning/USB-C<br>
+📷 Remplacement caméra, boutons, haut-parleur<br><br>
+⏱️ La plupart des réparations en <strong>30 minutes</strong><br>
+✅ Pièces de qualité disponibles en stock<br><br>
+Indiquez-nous votre modèle exact sur WhatsApp pour un devis immédiat.`
+  },
+  {
+    keys: ['samsung','galaxy','android'],
+    response: `<strong>Réparation Samsung</strong> 📱<br><br>
+Nous sommes spécialisés dans la réparation Samsung Galaxy (S, A, M, Note, Z) :<br><br>
+📱 Remplacement écran AMOLED / Super AMOLED<br>
+🔋 Remplacement batterie<br>
+⚡ Connecteur USB-C<br>
+📷 Caméra, boutons, haut-parleur<br><br>
+⏱️ Délai moyen : <strong>25 à 40 minutes</strong><br>
+✅ Pièces en stock pour les modèles courants<br><br>
+Dites-nous votre modèle sur WhatsApp pour un devis gratuit.`
+  },
+  {
+    keys: ['devis','prix','coût','tarif','combien','cher'],
+    response: `<strong>Nos tarifs</strong> 💰<br><br>
+Nos prix varient selon le modèle et les pièces nécessaires. Ce que l'on peut vous garantir :<br><br>
+💡 <strong>Devis gratuit et sans engagement</strong> avant toute intervention<br>
+✅ Réparations à partir de 20 €<br>
+🏆 Rapport qualité/prix parmi les meilleurs de Rennes<br>
+⚠️ On ne commence jamais sans votre accord sur le prix<br><br>
+Envoyez-nous votre modèle et le problème sur WhatsApp — on vous répond avec un tarif précis en quelques minutes.`
+  },
+  {
+    keys: ['horaire','ouvert','fermé','quand','heure','disponible'],
+    response: `<strong>Nos horaires</strong> 🕐<br><br>
+📅 Lundi, Mardi, Jeudi, Vendredi, Samedi : <strong>14h30 – 20h00</strong><br>
+❌ Mercredi & Dimanche : Fermé<br><br>
+📍 <strong>2 Rue Gouverneur Général Yves Châtel, Rennes</strong><br><br>
+Pas besoin de rendez-vous — venez directement pendant nos horaires d'ouverture.`
+  },
+  {
+    keys: ['garantie','garanti'],
+    response: `<strong>Garantie</strong> 🛡️<br><br>
+Toutes nos réparations sont garanties ! Nous utilisons des pièces de qualité premium et si un problème survient après notre intervention, on s'en occupe.<br><br>
+✅ Garantie sur pièces et main d'œuvre<br>
+✅ Diagnostic gratuit<br>
+✅ Aucun frais sans votre accord<br><br>
+Vous avez une question sur notre garantie ? Contactez-nous directement.`
+  }
+];
+
+const AI_DEFAULT = `Je comprends votre demande, mais je suis spécialisé uniquement dans les questions de <strong>réparation de smartphones, tablettes et ordinateurs</strong>, ainsi que la vente d'accessoires.<br><br>
+Pour toute autre question, notre équipe est disponible directement :<br>
+📞 <strong>07 77 89 59 35</strong><br>
+📍 2 Rue Gouverneur Général Yves Châtel, Rennes`;
+
+function aiMatch(text) {
+  const t = text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  for (const rule of AI_RULES) {
+    if (rule.keys.some(k => t.includes(k.normalize("NFD").replace(/[̀-ͯ]/g, "")))) {
+      return rule.response;
+    }
+  }
+  return null;
+}
 
 function aiAddMsg(text, role) {
   const box = document.getElementById('ai-messages');
@@ -1646,40 +1765,21 @@ function aiAddMsg(text, role) {
   return div;
 }
 
-function aiTyping() {
-  return aiAddMsg('En train de rédiger…', 'typing');
-}
-
-async function aiSend(preset) {
+function aiSend(preset) {
   const input = document.getElementById('ai-input');
-  const text = preset || input.value.trim();
+  const text = (preset || input.value).trim();
   if (!text) return;
   input.value = '';
 
   aiAddMsg(text, 'user');
-  const loader = aiTyping();
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 300,
-        system: AI_SYSTEM,
-        messages: [{ role: 'user', content: text }]
-      })
-    });
-    const data = await res.json();
-    const reply = data.content && data.content[0] ? data.content[0].text : "Je n'ai pas pu obtenir de réponse. Contactez-nous directement.";
-    loader.remove();
-
+  setTimeout(function() {
+    const matched = aiMatch(text);
+    const reply = matched || AI_DEFAULT;
     const waText = encodeURIComponent("Bonjour, j'ai besoin d'aide pour : " + text);
-    aiAddMsg(reply + '<br><br><a href="' + AI_WA + waText + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;background:#25D366;color:#fff;padding:0.4rem 0.9rem;border-radius:50px;text-decoration:none;font-size:0.8rem;font-weight:600;margin-top:0.3rem;">📲 Demander un devis WhatsApp</a>', 'bot');
-  } catch(e) {
-    loader.remove();
-    aiAddMsg("Une erreur s'est produite. Contactez-nous directement au <strong>07 77 89 59 35</strong> 😊", 'bot');
-  }
+    const btn = '<br><br><a href="' + AI_WA + waText + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;background:#25D366;color:#fff;padding:0.4rem 0.95rem;border-radius:50px;text-decoration:none;font-size:0.8rem;font-weight:600;">📲 Devis WhatsApp gratuit</a>';
+    aiAddMsg(reply + btn, 'bot');
+  }, 600);
 }
 </script>
 
