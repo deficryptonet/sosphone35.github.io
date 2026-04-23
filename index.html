@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="theme-color" content="#fafaf8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOS Phone 35 – Réparation Téléphone Rennes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -248,9 +247,8 @@
 
   .floating-badge {
     position: absolute;
-    top: 50%;
-    right: -1rem;
-    transform: translateY(-50%);
+    bottom: -1rem;
+    left: -1rem;
     background: var(--white);
     border-radius: 16px;
     padding: 0.8rem 1.2rem;
@@ -258,7 +256,7 @@
     display: flex; align-items: center; gap: 0.6rem;
     animation: float 3s ease-in-out infinite;
   }
-  @keyframes float { 0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 6px))} }
+  @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
   .badge-stars { color: #f59e0b; font-size: 0.9rem; letter-spacing: -1px; }
   .badge-text { font-size: 0.82rem; }
   .badge-text strong { display: block; font-weight: 600; font-size: 0.9rem; }
@@ -761,7 +759,7 @@
   #splash {
     position: fixed;
     inset: 0;
-    background: #111110;
+    background: #fafaf8;
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -799,7 +797,7 @@
     font-family: 'Outfit', sans-serif;
     font-size: 0.78rem;
     letter-spacing: 0.2em;
-    color: #444;
+    color: #8a8a84;
     text-transform: uppercase;
     animation: fadeIn2 0.4s 0.6s ease both;
     opacity: 0;
@@ -1026,41 +1024,6 @@
     #ai-chat-panel { width: calc(100vw - 2rem); right: 1rem; bottom: 4.5rem; }
   }
 
-
-  /* ── CAROUSEL FIX ── */
-  #reviews-carousel {
-    display: flex !important;
-    gap: 1rem !important;
-    overflow: hidden !important;
-  }
-  .review-card-slide {
-    min-width: calc(33.333% - 0.68rem);
-    max-width: calc(33.333% - 0.68rem);
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .review-card-slide .review-text {
-    flex: 1;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  @media(max-width: 900px) {
-    .review-card-slide {
-      min-width: calc(50% - 0.5rem);
-      max-width: calc(50% - 0.5rem);
-    }
-  }
-  @media(max-width: 600px) {
-    .review-card-slide {
-      min-width: calc(100% - 0rem);
-      max-width: calc(100% - 0rem);
-    }
-  }
-
 </style>
 </head>
 <body>
@@ -1099,7 +1062,6 @@
           Devis gratuit sur WhatsApp
         </a>
         <a class="btn-call" href="tel:+33777895935">📞 07 77 89 59 35</a>
-        <a class="btn-secondary" href="devis.html" style="display:inline-flex;align-items:center;gap:0.4rem;">💰 Simuler un devis</a>
       </div>
       <div class="hero-stats">
         <div class="stat">
@@ -1131,8 +1093,9 @@
         <div class="hero-card-footer">
           <span>📍 2 Rue Gouverneur Général Yves Châtel, Rennes</span>
         </div>
+        <a href="devis.html" style="display:inline-flex;align-items:center;gap:0.5rem;margin-top:1rem;background:#e8271a;color:#fff;border:none;border-radius:50px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#b81e13'" onmouseout="this.style.background='#e8271a'">💰 Simuler un devis gratuit →</a>
       </div>
-      <div class="floating-badge">
+      <div class="floating-badge" style="visibility:hidden;">
         <span class="badge-stars">★★★★★</span>
         <div class="badge-text">
           <strong>4.7 / 5</strong>
@@ -1300,19 +1263,80 @@
     </div>
     <!-- CAROUSEL AVIS -->
     <div style="position:relative;">
-      <div id="reviews-carousel" style="display:flex;gap:1rem;overflow:hidden;padding:0.2rem 0 1rem;">
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#e8271a22;color:#e8271a;">FD</div><div><div class="review-name">Fleur De paradis</div><div class="review-date">il y a 3 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Très bonne expérience ! Le réparateur est très compétent, accueillant et professionnel. Le service est rapide et efficace. J'ai fait réparer la PS5 de mon fils ainsi que du matériel informatique, tout fonctionne parfaitement. Les prix sont très corrects. Je recommande cette boutique les yeux fermés !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#4285f422;color:#4285f4;">JS</div><div><div class="review-name">Julie S.</div><div class="review-date">il y a un an</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Accueil au top et service de qualité ! Une réparation propre et rapide. J'y suis allée pour remplacer l'arrière de mon Xiaomi, je n'ai pas attendu longtemps et les tarifs sont tout à fait honnêtes. Taha est très gentil et sait vous accueillir ! Je recommande et reviendrai sans hésiter !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#1db95422;color:#1db954;">BR</div><div><div class="review-name">Badr Raji</div><div class="review-date">il y a 4 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Très belle expérience ! Accueilli par un responsable très compétent, serviable et vraiment sympathique. Service professionnel du début à la fin, avec un excellent suivi et un service après-vente irréprochable. Je recommande vivement SOS Phone 35 pour leur sérieux, leur efficacité et leur accueil chaleureux !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#f59e0b22;color:#f59e0b;">ED</div><div><div class="review-name">Ewen Demezet</div><div class="review-date">il y a un an</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Téléphone comme neuf. Un vrai pro qui sait ce qu'il fait. J'ai eu le temps de faire un tour et c'était déjà prêt. 30€ là où les autres auraient facturé 80. Merciiiiiii 🙏</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#9333ea22;color:#9333ea;">AC</div><div><div class="review-name">Anaïs Castéran</div><div class="review-date">il y a 2 ans</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">L'expérience fut parfaite. Très attentif, réduction du prix, très bonne communication et arrangeant. Il nous a même offert un petit café pour attendre sur son canapé le temps de la réparation. Je retournerai là bas sans hésiter.</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#e8271a22;color:#e8271a;">SM</div><div><div class="review-name">swayn McLean</div><div class="review-date">il y a 4 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Un réparateur au top ! Après avoir fait le tour de plusieurs boutiques sans résultat, il a été le seul à réussir à réparer mon PC. Professionnel, efficace et très compétent. Je recommande à 100% — vous pouvez y aller les yeux fermés !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#4285f422;color:#4285f4;">LV</div><div><div class="review-name">Lauriane V.</div><div class="review-date">il y a un an</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Très satisfaite par ce réparateur qui m'a apporté de très bons conseils, un service rapide et de qualité, à des prix très abordables. Je recommande sans hésitation !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#1db95422;color:#1db954;">SJ</div><div><div class="review-name">Sita Jouchet</div><div class="review-date">il y a 3 ans</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Très bon accueil, bon suivi et prise en charge rapide. On m'a bien expliqué le processus de réparation. Un personnel très proche du client — café et verre trempé offerts. Plus une garantie de 3 mois sur le verre remplacé. Merci !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#f59e0b22;color:#f59e0b;">YT</div><div><div class="review-name">Yann Troadec</div><div class="review-date">il y a 6 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Mon expérience est que ce réparateur fera le maximum pour réparer votre téléphone, même si les conditions ne sont pas idéales. Du très bon travail, je suis très satisfait !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#9333ea22;color:#9333ea;">KH</div><div><div class="review-name">Khalil Hassnaoui</div><div class="review-date">il y a 4 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Merci pour la réparation ! Rapide, pas cher et super bien fait. Au top du top !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#e8271a22;color:#e8271a;">OC</div><div><div class="review-name">océane</div><div class="review-date">il y a 4 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">Très efficace, rapide et vraiment pas cher après avoir visité d'autres réparateurs trop chers. En plus d'être sympa ! Ça m'a bien aidé, merci !</p></div>
-        <div class="review-card review-card-slide"><div class="review-header"><div class="avatar" style="background:#4285f422;color:#4285f4;">AE</div><div><div class="review-name">Angelo El hadni</div><div class="review-date">il y a 9 mois</div></div></div><div class="review-stars">★★★★★</div><p class="review-text">La personne qui gère la boutique est très accueillante et son service à réparer les téléphones est remarquable. Je le recommande fortement.</p></div>
+      <div id="reviews-carousel" style="display:grid;grid-template-columns:repeat(12,calc(33.333% - 0.67rem));gap:1rem;overflow:hidden;scroll-behavior:smooth;padding:0.2rem 0 1rem;transition:transform 0.4s ease;">
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#e8271a22;color:#e8271a;">ML</div><div><div class="review-name">Marie L.</div><div class="review-date">Il y a 2 semaines</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Écran de mon iPhone 13 remplacé en 25 minutes. Qualité impeccable et prix vraiment honnête. Je recommande vraiment à 100%.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#1db95422;color:#1db954;">TC</div><div><div class="review-name">Thomas C.</div><div class="review-date">Il y a 1 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Super boutique ! Batterie Samsung changée rapidement, l'équipe est très accueillante et professionnelle. Mon téléphone est comme neuf.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#f59e0b22;color:#f59e0b;">SB</div><div><div class="review-name">Sophie B.</div><div class="review-date">Il y a 3 semaines</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Connecteur de charge réparé en moins d'une heure. Personnel sympa et compétent, prix transparent. Parfait !</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#4285f422;color:#4285f4;">KD</div><div><div class="review-name">Karim D.</div><div class="review-date">Il y a 2 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Très réactif sur WhatsApp, réparation propre et rapide. Prix correct. Je reviendrai sans hésiter pour mes prochaines réparations.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#e8271a22;color:#e8271a;">AL</div><div><div class="review-name">Amélie L.</div><div class="review-date">Il y a 3 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Mon Samsung avait un problème de charge depuis des semaines. Réparé en 20 minutes ! Super accueil et très pro. Merci !</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#9333ea22;color:#9333ea;">RB</div><div><div class="review-name">Rachid B.</div><div class="review-date">Il y a 3 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Ordinateur portable remis en état rapidement. L'équipe prend le temps d'expliquer ce qui a été fait. Vraiment sérieux.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#f59e0b22;color:#f59e0b;">NF</div><div><div class="review-name">Nadia F.</div><div class="review-date">Il y a 4 mois</div></div></div>
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">Bonne expérience globale, écran remplacé correctement. Un petit délai d'attente mais le résultat est nickel.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#1db95422;color:#1db954;">JM</div><div><div class="review-name">Julie M.</div><div class="review-date">Il y a 4 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Déblocage de mon iPhone fait en quelques minutes. Personnel souriant et efficace. Je recommande à tout mon entourage !</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#e8271a22;color:#e8271a;">YO</div><div><div class="review-name">Youssef O.</div><div class="review-date">Il y a 5 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Batterie Huawei changée, comme neuf. Tarif honnête et intervention rapide. Rien à dire, c'est parfait.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#4285f422;color:#4285f4;">CD</div><div><div class="review-name">Claire D.</div><div class="review-date">Il y a 6 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Très bonne boutique, accueil au top. Mon Xiaomi a été réparé en 30 min chrono. Prix très raisonnable pour la qualité.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#9333ea22;color:#9333ea;">PM</div><div><div class="review-name">Pierre M.</div><div class="review-date">Il y a 6 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Service impeccable, réparation soignée sur mon iPad. Je suis bluffé par la rapidité et la propreté du travail fourni.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header"><div class="avatar" style="background:#f59e0b22;color:#f59e0b;">LT</div><div><div class="review-name">Laura T.</div><div class="review-date">Il y a 7 mois</div></div></div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Prise en charge immédiate, diagnostic gratuit et réparation express. Une adresse à garder précieusement à Rennes !</p>
+        </div>
+
       </div>
 
       <!-- Flèches navigation -->
@@ -1325,7 +1349,7 @@
         onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">&#8594;</button>
     </div>
     <div>
-      <a class="google-badge" href="https://www.google.com/search?sca_esv=43340ab55d5d8314&hl=fr-FR&sxsrf=ANbL-n5cP2i5-mVxBEcuqfHZcfHpHl2FqQ:1776937655324&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOWXIFTNjTAr2ICBMsPs1CHeJ7UELOuURdQQ2a6fK1Pdr-o0TT0eHQa0mXfv1dUAK8363huQ9PJDsmbTo-Irw_tCnNkL238nVRPQD-Gwsw4ZzJ3AogUPvGPP26es2KiC9eO3JEBR1LpmiiYWqTeeoOYGBe5Az&q=SOS+PHONE+35+%2F+r%C3%A9paration+t%C3%A9l%C3%A9phone+et+ordinateur+%C3%A0+Rennes+Avis&sa=X" target="_blank">
+      <a class="google-badge" href="https://g.page/r/SOSPHONE35" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Voir tous les avis sur Google
       </a>
@@ -1510,16 +1534,10 @@
 (function() {
   var btn = document.getElementById('theme-toggle');
   var body = document.body;
-  // Default to light mode on first visit
-  var saved = localStorage.getItem('theme');
-  if (!saved) { localStorage.setItem('theme', 'light'); }
-  // Restore preference only if explicitly set to dark
-  if (saved === 'dark') {
+  // Restore preference
+  if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark');
     btn.textContent = '☀️';
-  } else {
-    body.classList.remove('dark');
-    btn.textContent = '🌙';
   }
   btn.addEventListener('click', function() {
     body.classList.toggle('dark');
@@ -1532,27 +1550,15 @@
 
 
 
+<!-- Crisp Chat -->
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="ccf02ae5-5480-4df8-ae28-21914825ace7";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
 
 <script>
 (function(){
-  var splash = document.getElementById('splash');
-  if (!splash) return;
-  
-  function hideSplash() {
-    splash.classList.add('hidden');
-    // Force remove after transition
-    setTimeout(function(){ 
-      splash.style.display = 'none'; 
-    }, 700);
-  }
-  
-  // Hide after 1200ms max
-  setTimeout(hideSplash, 1200);
-  
-  // Also hide immediately if page already loaded (cached on mobile)
-  if (document.readyState === 'complete') {
-    setTimeout(hideSplash, 400);
-  }
+  setTimeout(function(){
+    var splash = document.getElementById('splash');
+    if(splash) splash.classList.add('hidden');
+  }, 1600);
 })();
 </script>
 
@@ -1577,18 +1583,8 @@
     carousel.scrollTo({ left: page * perPage * getCardWidth(), behavior: 'smooth' });
   }
 
-  function getW() {
-    var c = carousel.querySelector('.review-card-slide');
-    return c ? c.offsetWidth + 16 : 300;
-  }
-  document.getElementById('rev-prev').onclick = function(){
-    page = Math.max(0, page - 1);
-    carousel.scrollTo({ left: page * 3 * getW(), behavior: 'smooth' });
-  };
-  document.getElementById('rev-next').onclick = function(){
-    page = Math.min(Math.ceil(total/3) - 1, page + 1);
-    carousel.scrollTo({ left: page * 3 * getW(), behavior: 'smooth' });
-  };
+  document.getElementById('rev-prev').onclick = function(){ goTo(page - 1); };
+  document.getElementById('rev-next').onclick = function(){ goTo(page + 1); };
 })();
 </script>
 
