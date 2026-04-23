@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulateur de Devis – SOS Phone 35</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #111110;
+  --white: #fafaf8;
+  --red: #e8271a;
+  --red-dark: #b81e13;
+  --gray: #f3f2f0;
+  --gray2: #e6e5e1;
+  --muted: #8a8a84;
+  --wa: #25D366;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 2rem;
+  background: rgba(250,250,248,0.95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--gray2);
+}
+.nav-back {
+  display: flex; align-items: center; gap: 0.5rem;
+  text-decoration: none; color: var(--black);
+  font-size: 0.88rem; font-weight: 500;
+  opacity: 0.6; transition: opacity 0.2s;
+}
+.nav-back:hover { opacity: 1; }
+.nav-title {
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--red);
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: #fff0ef; color: var(--red);
+  font-size: 0.72rem; font-weight: 600;
+  padding: 0.28rem 0.85rem; border-radius: 50px;
+  border: 1px solid #fbd0cd;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700; letter-spacing: -0.02em;
+  line-height: 1.15; margin-bottom: 0.8rem;
+}
+.hero h1 em { font-style: normal; color: var(--red); }
+.hero p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+
+/* SIMULATOR */
+.simulator {
+  max-width: 760px;
+  margin: 0 auto 4rem;
+  padding: 0 1.5rem;
+}
+
+/* STEPS */
+.steps-bar {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 2.5rem;
+}
+.step-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.step-item.active { color: var(--black); }
+.step-item.done { color: var(--red); }
+.step-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--gray2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700;
+  flex-shrink: 0; transition: background 0.2s, color 0.2s;
+}
+.step-item.active .step-num { background: var(--black); color: #fff; }
+.step-item.done .step-num { background: var(--red); color: #fff; }
+.step-line { width: 32px; height: 1px; background: var(--gray2); flex-shrink: 0; }
+
+/* CARD STEP */
+.step-card {
+  background: var(--white);
+  border: 1px solid var(--gray2);
+  border-radius: 20px;
+  padding: 2rem;
+  display: none;
+  animation: fadeUp 0.35s ease both;
+}
+.step-card.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.step-label {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--red); margin-bottom: 0.5rem;
+}
+.step-title {
+  font-size: 1.2rem; font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* OPTION GRID */
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+.option-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.5rem;
+  background: var(--gray);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 1.2rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  text-align: center;
+}
+.option-btn:hover { background: #ebe9e6; transform: translateY(-2px); }
+.option-btn.selected {
+  border-color: var(--red);
+  background: #fff0ef;
+}
+.option-icon { font-size: 1.8rem; line-height: 1; }
+.option-label { font-size: 0.85rem; font-weight: 600; color: var(--black); }
+.option-sub { font-size: 0.72rem; color: var(--muted); }
+
+/* BRAND GRID */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.6rem;
+}
+.brand-btn {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gray);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.9rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.85rem; font-weight: 600;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  text-align: center;
+}
+.brand-btn:hover { background: #ebe9e6; transform: translateY(-1px); }
+.brand-btn.selected { border-color: var(--red); background: #fff0ef; }
+
+/* PROBLEM LIST */
+.problem-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.problem-item {
+  display: flex; align-items: center; gap: 0.8rem;
+  background: var(--gray);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.problem-item:hover { background: #ebe9e6; }
+.problem-item.selected { border-color: var(--red); background: #fff0ef; }
+.problem-item.selected .problem-check { background: var(--red); border-color: var(--red); }
+.problem-item.selected .problem-check::after { opacity: 1; }
+.problem-check {
+  width: 20px; height: 20px;
+  border-radius: 50%; border: 2px solid var(--gray2);
+  flex-shrink: 0; position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.problem-check::after {
+  content: '✓'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: #fff; font-weight: 700;
+  opacity: 0; transition: opacity 0.15s;
+}
+.problem-text { flex: 1; }
+.problem-name { font-size: 0.9rem; font-weight: 600; }
+.problem-desc { font-size: 0.78rem; color: var(--muted); margin-top: 1px; }
+.problem-price {
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--red); white-space: nowrap;
+}
+
+/* RESULT */
+.result-card {
+  background: var(--black);
+  border-radius: 18px;
+  padding: 2rem;
+  color: #fff;
+  margin-bottom: 1.2rem;
+}
+.result-header {
+  display: flex; align-items: center; gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+.result-icon {
+  width: 44px; height: 44px;
+  background: var(--red);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.result-title { font-size: 1rem; font-weight: 600; }
+.result-sub { font-size: 0.8rem; opacity: 0.5; margin-top: 2px; }
+
+.result-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-size: 0.88rem;
+}
+.result-row:last-child { border-bottom: none; }
+.result-row .label { opacity: 0.6; }
+.result-row .value { font-weight: 600; }
+
+.estimate-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 1.2rem;
+  margin-top: 1.2rem;
+  text-align: center;
+}
+.estimate-label { font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+.estimate-range { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+.estimate-note { font-size: 0.75rem; opacity: 0.4; margin-top: 0.4rem; }
+
+.result-actions { display: flex; flex-direction: column; gap: 0.7rem; }
+.btn-wa {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: var(--wa); color: #fff;
+  border: none; border-radius: 50px;
+  padding: 0.9rem 1.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(37,211,102,0.3);
+}
+.btn-wa:hover { background: #1ebe58; transform: translateY(-2px); }
+.btn-call {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: transparent; color: var(--black);
+  border: 1px solid var(--gray2); border-radius: 50px;
+  padding: 0.9rem 1.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.btn-call:hover { border-color: var(--black); background: var(--gray); }
+
+.btn-nav {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--black); color: #fff;
+  border: none; border-radius: 50px;
+  padding: 0.75rem 1.4rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s, transform 0.15s;
+  margin-top: 1.2rem;
+}
+.btn-nav:hover { background: #333; transform: translateY(-1px); }
+.btn-nav.secondary {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--gray2);
+}
+.btn-nav.secondary:hover { background: var(--gray); color: var(--black); border-color: var(--black); }
+
+.nav-btns { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+.other-input {
+  width: 100%;
+  border: 1px solid var(--gray2);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  color: var(--black);
+  background: var(--white);
+  outline: none;
+  margin-top: 0.8rem;
+  transition: border-color 0.2s;
+}
+.other-input:focus { border-color: var(--black); }
+.other-input::placeholder { color: var(--muted); }
+
+/* Breadcrumb recap */
+.recap-chips {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+.recap-chip {
+  background: var(--gray); border-radius: 50px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem; font-weight: 500;
+  color: var(--muted);
+}
+.recap-chip strong { color: var(--black); }
+
+@media(max-width: 600px) {
+  .option-grid { grid-template-columns: repeat(2, 1fr); }
+  .brand-grid { grid-template-columns: repeat(3, 1fr); }
+  nav { padding: 0.7rem 1rem; }
+  .step-card { padding: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">← Retour au site</a>
+  <span class="nav-title">Simulateur de devis</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">⚡ Gratuit · Sans engagement</div>
+  <h1>Estimez le coût de votre <em>réparation</em></h1>
+  <p>Sélectionnez votre appareil, la marque et le problème — obtenez une estimation en 30 secondes puis demandez un devis exact sur WhatsApp.</p>
+</div>
+
+<div class="simulator">
+
+  <!-- STEPS BAR -->
+  <div class="steps-bar" id="steps-bar">
+    <div class="step-item active" id="step-ind-1">
+      <div class="step-num">1</div><span>Appareil</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item" id="step-ind-2">
+      <div class="step-num">2</div><span>Marque</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item" id="step-ind-3">
+      <div class="step-num">3</div><span>Problème</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item" id="step-ind-4">
+      <div class="step-num">4</div><span>Estimation</span>
+    </div>
+  </div>
+
+  <!-- STEP 1 : Appareil -->
+  <div class="step-card active" id="step-1">
+    <div class="step-label">Étape 1 sur 4</div>
+    <div class="step-title">Quel type d'appareil ?</div>
+    <div class="option-grid">
+      <div class="option-btn" onclick="selectType('smartphone','📱','Smartphone')">
+        <span class="option-icon">📱</span>
+        <span class="option-label">Smartphone</span>
+        <span class="option-sub">iPhone, Samsung…</span>
+      </div>
+      <div class="option-btn" onclick="selectType('tablette','📲','Tablette')">
+        <span class="option-icon">📲</span>
+        <span class="option-label">Tablette</span>
+        <span class="option-sub">iPad, Galaxy Tab…</span>
+      </div>
+      <div class="option-btn" onclick="selectType('ordinateur','💻','Ordinateur')">
+        <span class="option-icon">💻</span>
+        <span class="option-label">Ordinateur</span>
+        <span class="option-sub">PC, Mac, laptop</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 : Marque -->
+  <div class="step-card" id="step-2">
+    <div class="step-label">Étape 2 sur 4</div>
+    <div class="step-title" id="s2-title">Quelle marque ?</div>
+    <div class="recap-chips" id="s2-recap"></div>
+    <div class="brand-grid" id="brand-grid"></div>
+    <div class="nav-btns">
+      <button class="btn-nav secondary" onclick="goStep(1)">← Retour</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 : Problème -->
+  <div class="step-card" id="step-3">
+    <div class="step-label">Étape 3 sur 4</div>
+    <div class="step-title">Quel est le problème ?</div>
+    <div class="recap-chips" id="s3-recap"></div>
+    <div class="problem-list" id="problem-list"></div>
+    <input class="other-input" id="other-input" type="text" placeholder="Autre problème ? Décrivez-le ici…" style="display:none;">
+    <div class="nav-btns">
+      <button class="btn-nav secondary" onclick="goStep(2)">← Retour</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 : Résultat -->
+  <div class="step-card" id="step-4">
+    <div class="step-label">Votre estimation</div>
+    <div class="step-title">Récapitulatif & devis</div>
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-icon" id="res-icon">🔧</div>
+        <div>
+          <div class="result-title" id="res-title">Réparation estimée</div>
+          <div class="result-sub">SOS Phone 35 · Rennes</div>
+        </div>
+      </div>
+      <div class="result-row"><span class="label">Appareil</span><span class="value" id="res-type">—</span></div>
+      <div class="result-row"><span class="label">Marque</span><span class="value" id="res-brand">—</span></div>
+      <div class="result-row"><span class="label">Problème</span><span class="value" id="res-problem">—</span></div>
+      <div class="result-row"><span class="label">Délai estimé</span><span class="value" id="res-delay">—</span></div>
+      <div class="estimate-box">
+        <div class="estimate-label">Estimation tarifaire</div>
+        <div class="estimate-range" id="res-price">—</div>
+        <div class="estimate-note">* Devis exact gratuit en boutique ou sur WhatsApp</div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <a class="btn-wa" id="wa-btn" href="#" target="_blank">
+        📲 Demander un devis exact sur WhatsApp
+      </a>
+      <a class="btn-call" href="tel:+33777895935">
+        📞 Appeler le 07 77 89 59 35
+      </a>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-nav secondary" onclick="goStep(3)">← Modifier</button>
+      <button class="btn-nav" onclick="resetSim()">🔄 Nouvelle estimation</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WA = "https://wa.me/33777895935?text=";
+
+// ── DATA ──
+const BRANDS = {
+  smartphone: ['Apple iPhone','Samsung','Huawei','Xiaomi','OnePlus','Oppo','Sony Xperia','Motorola','Honor','Autre'],
+  tablette:   ['Apple iPad','Samsung Galaxy Tab','Huawei MatePad','Lenovo Tab','Amazon Fire','Autre'],
+  ordinateur: ['Apple MacBook','Dell','HP','Lenovo','Asus','Acer','MSI','Microsoft Surface','Autre']
+};
+
+const PROBLEMS = {
+  smartphone: [
+    { name:'Écran cassé / fissuré', desc:'Remplacement écran LCD ou OLED', price:'À partir de 29 €', delay:'20–35 min', range:'29 – 149 €' },
+    { name:'Batterie défaillante', desc:'Autonomie réduite, éteinte sans raison', price:'À partir de 25 €', delay:'15–25 min', range:'25 – 59 €' },
+    { name:'Problème de charge', desc:'Ne charge plus, charge lentement', price:'À partir de 25 €', delay:'20–40 min', range:'25 – 65 €' },
+    { name:'Caméra défectueuse', desc:'Photo floue, noire ou caméra cassée', price:'À partir de 35 €', delay:'25–45 min', range:'35 – 99 €' },
+    { name:'Haut-parleur / micro', desc:'Son absent ou distordu, micro muet', price:'À partir de 30 €', delay:'20–40 min', range:'30 – 75 €' },
+    { name:'Bouton bloqué / cassé', desc:'Bouton home, power ou volume', price:'À partir de 25 €', delay:'20–35 min', range:'25 – 60 €' },
+    { name:'Problème logiciel', desc:'Bloqué, bug, virus, réinitialisation', price:'À partir de 20 €', delay:'30–60 min', range:'20 – 50 €' },
+    { name:'Déblocage opérateur', desc:'Désimlockage toutes marques', price:'À partir de 20 €', delay:'15–30 min', range:'20 – 45 €' },
+    { name:'Dommage eau / humidité', desc:'Téléphone tombé dans l\'eau', price:'Diagnostic gratuit', delay:'Variable', range:'Sur devis' },
+    { name:'Autre problème', desc:'Décrivez votre problème', price:'Sur devis', delay:'Variable', range:'Sur devis' },
+  ],
+  tablette: [
+    { name:'Écran cassé / fissuré', desc:'Remplacement vitre ou écran complet', price:'À partir de 49 €', delay:'30–60 min', range:'49 – 199 €' },
+    { name:'Batterie défaillante', desc:'Autonomie très réduite', price:'À partir de 39 €', delay:'30–50 min', range:'39 – 99 €' },
+    { name:'Problème de charge', desc:'Ne charge plus, connecteur abîmé', price:'À partir de 35 €', delay:'30–50 min', range:'35 – 85 €' },
+    { name:'Bouton bloqué / cassé', desc:'Bouton power ou volume défaillant', price:'À partir de 30 €', delay:'25–45 min', range:'30 – 70 €' },
+    { name:'Problème logiciel', desc:'Bloquée, lente, bug système', price:'À partir de 25 €', delay:'30–60 min', range:'25 – 60 €' },
+    { name:'Caméra défectueuse', desc:'Photo floue ou caméra HS', price:'À partir de 45 €', delay:'30–50 min', range:'45 – 110 €' },
+    { name:'Dommage eau / humidité', desc:'Tablette tombée dans l\'eau', price:'Diagnostic gratuit', delay:'Variable', range:'Sur devis' },
+    { name:'Autre problème', desc:'Décrivez votre problème', price:'Sur devis', delay:'Variable', range:'Sur devis' },
+  ],
+  ordinateur: [
+    { name:'Écran cassé / défaillant', desc:'Remplacement dalle LCD', price:'À partir de 79 €', delay:'Selon modèle', range:'79 – 299 €' },
+    { name:'Batterie (laptop)', desc:'Ne tient plus la charge', price:'À partir de 49 €', delay:'30–60 min', range:'49 – 129 €' },
+    { name:'Ordinateur lent', desc:'Nettoyage, optimisation, RAM/SSD', price:'À partir de 35 €', delay:'1–2h', range:'35 – 99 €' },
+    { name:'Virus / malware', desc:'Suppression virus, sécurisation', price:'À partir de 35 €', delay:'1–3h', range:'35 – 80 €' },
+    { name:'Remplacement SSD/HDD', desc:'Disque dur défaillant ou lent', price:'À partir de 59 €', delay:'1–2h', range:'59 – 159 €' },
+    { name:'Clavier défectueux', desc:'Touches bloquées ou cassées', price:'À partir de 49 €', delay:'30–60 min', range:'49 – 149 €' },
+    { name:'Problème démarrage', desc:'N\'allume plus, écran noir', price:'Diagnostic gratuit', delay:'Variable', range:'Sur devis' },
+    { name:'Nettoyage ventilateur', desc:'Surchauffe, ventilateur bruyant', price:'À partir de 35 €', delay:'1h', range:'35 – 65 €' },
+    { name:'Réinstallation OS', desc:'Windows ou macOS', price:'À partir de 49 €', delay:'1–2h', range:'49 – 99 €' },
+    { name:'Dommage eau / choc', desc:'Ordinateur tombé ou humide', price:'Diagnostic gratuit', delay:'Variable', range:'Sur devis' },
+    { name:'Autre problème', desc:'Décrivez votre problème', price:'Sur devis', delay:'Variable', range:'Sur devis' },
+  ]
+};
+
+// ── STATE ──
+let state = { type: null, typeLabel: null, typeIcon: null, brand: null, problem: null, problemData: null, otherText: '' };
+
+// ── NAVIGATION ──
+function goStep(n) {
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  // update indicators
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step-ind-' + i);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── STEP 1: Type ──
+function selectType(type, icon, label) {
+  state.type = type; state.typeLabel = label; state.typeIcon = icon;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  setTimeout(() => { buildBrands(); goStep(2); }, 200);
+}
+
+// ── STEP 2: Brands ──
+function buildBrands() {
+  const grid = document.getElementById('brand-grid');
+  const recap = document.getElementById('s2-recap');
+  recap.innerHTML = `<div class="recap-chip">${state.typeIcon} <strong>${state.typeLabel}</strong></div>`;
+  grid.innerHTML = '';
+  BRANDS[state.type].forEach(b => {
+    const btn = document.createElement('div');
+    btn.className = 'brand-btn';
+    btn.textContent = b;
+    if (b === state.brand) btn.classList.add('selected');
+    btn.onclick = () => selectBrand(b, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function selectBrand(brand, el) {
+  state.brand = brand;
+  document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  setTimeout(() => { buildProblems(); goStep(3); }, 200);
+}
+
+// ── STEP 3: Problems ──
+function buildProblems() {
+  const list = document.getElementById('problem-list');
+  const recap = document.getElementById('s3-recap');
+  const otherInput = document.getElementById('other-input');
+  recap.innerHTML = `
+    <div class="recap-chip">${state.typeIcon} <strong>${state.typeLabel}</strong></div>
+    <div class="recap-chip">🏷️ <strong>${state.brand}</strong></div>`;
+  list.innerHTML = '';
+  otherInput.style.display = 'none';
+
+  PROBLEMS[state.type].forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'problem-item';
+    if (p.name === state.problem) item.classList.add('selected');
+    item.innerHTML = `
+      <div class="problem-check"></div>
+      <div class="problem-text">
+        <div class="problem-name">${p.name}</div>
+        <div class="problem-desc">${p.desc}</div>
+      </div>
+      <div class="problem-price">${p.price}</div>`;
+    item.onclick = () => selectProblem(p, item);
+    list.appendChild(item);
+  });
+}
+
+function selectProblem(p, el) {
+  state.problem = p.name; state.problemData = p;
+  document.querySelectorAll('.problem-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  const otherInput = document.getElementById('other-input');
+  if (p.name === 'Autre problème') {
+    otherInput.style.display = 'block';
+    otherInput.focus();
+    otherInput.oninput = () => { state.otherText = otherInput.value; };
+  } else {
+    otherInput.style.display = 'none';
+    state.otherText = '';
+    setTimeout(() => { buildResult(); goStep(4); }, 250);
+  }
+}
+
+// ── STEP 4: Result ──
+function buildResult() {
+  const p = state.problemData;
+  const problemLabel = state.otherText || state.problem;
+
+  document.getElementById('res-icon').textContent = state.typeIcon;
+  document.getElementById('res-title').textContent = `${state.typeLabel} ${state.brand}`;
+  document.getElementById('res-type').textContent = state.typeLabel;
+  document.getElementById('res-brand').textContent = state.brand;
+  document.getElementById('res-problem').textContent = problemLabel;
+  document.getElementById('res-delay').textContent = p.delay;
+  document.getElementById('res-price').textContent = p.range;
+
+  const msg = encodeURIComponent(
+    `Bonjour ! Je voudrais un devis pour :\n- Appareil : ${state.typeLabel}\n- Marque : ${state.brand}\n- Problème : ${problemLabel}\nEstimation vue sur le site : ${p.range}`
+  );
+  document.getElementById('wa-btn').href = WA + msg;
+}
+
+// ── CONFIRM OTHER ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && state.problem === 'Autre problème' && state.otherText.trim()) {
+    buildResult(); goStep(4);
+  }
+});
+
+function resetSim() {
+  state = { type:null, typeLabel:null, typeIcon:null, brand:null, problem:null, problemData:null, otherText:'' };
+  document.getElementById('other-input').value = '';
+  document.getElementById('other-input').style.display = 'none';
+  document.querySelectorAll('.option-btn,.brand-btn,.problem-item').forEach(el => el.classList.remove('selected'));
+  goStep(1);
+}
+</script>
+</body>
+</html>
