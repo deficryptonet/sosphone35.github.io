@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="theme-color" content="#fafaf8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOS Phone 35 – Réparation Téléphone Rennes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -247,8 +248,9 @@
 
   .floating-badge {
     position: absolute;
-    bottom: -1rem;
-    left: -1rem;
+    top: 50%;
+    right: -1rem;
+    transform: translateY(-50%);
     background: var(--white);
     border-radius: 16px;
     padding: 0.8rem 1.2rem;
@@ -256,7 +258,7 @@
     display: flex; align-items: center; gap: 0.6rem;
     animation: float 3s ease-in-out infinite;
   }
-  @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+  @keyframes float { 0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 6px))} }
   .badge-stars { color: #f59e0b; font-size: 0.9rem; letter-spacing: -1px; }
   .badge-text { font-size: 0.82rem; }
   .badge-text strong { display: block; font-weight: 600; font-size: 0.9rem; }
@@ -1508,10 +1510,16 @@
 (function() {
   var btn = document.getElementById('theme-toggle');
   var body = document.body;
-  // Restore preference
-  if (localStorage.getItem('theme') === 'dark') {
+  // Default to light mode on first visit
+  var saved = localStorage.getItem('theme');
+  if (!saved) { localStorage.setItem('theme', 'light'); }
+  // Restore preference only if explicitly set to dark
+  if (saved === 'dark') {
     body.classList.add('dark');
     btn.textContent = '☀️';
+  } else {
+    body.classList.remove('dark');
+    btn.textContent = '🌙';
   }
   btn.addEventListener('click', function() {
     body.classList.toggle('dark');
@@ -1527,10 +1535,24 @@
 
 <script>
 (function(){
-  setTimeout(function(){
-    var splash = document.getElementById('splash');
-    if(splash) splash.classList.add('hidden');
-  }, 1600);
+  var splash = document.getElementById('splash');
+  if (!splash) return;
+  
+  function hideSplash() {
+    splash.classList.add('hidden');
+    // Force remove after transition
+    setTimeout(function(){ 
+      splash.style.display = 'none'; 
+    }, 700);
+  }
+  
+  // Hide after 1200ms max
+  setTimeout(hideSplash, 1200);
+  
+  // Also hide immediately if page already loaded (cached on mobile)
+  if (document.readyState === 'complete') {
+    setTimeout(hideSplash, 400);
+  }
 })();
 </script>
 
