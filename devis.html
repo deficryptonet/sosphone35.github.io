@@ -362,12 +362,16 @@ nav {
       <div class="step-num">3</div><span>Marque</span>
     </div>
     <div class="step-line"></div>
+    <div class="step-item" id="step-ind-25">
+      <div class="step-num">4</div><span>Modèle</span>
+    </div>
+    <div class="step-line"></div>
     <div class="step-item" id="step-ind-3">
-      <div class="step-num">4</div><span>Problème</span>
+      <div class="step-num">5</div><span>Problème</span>
     </div>
     <div class="step-line"></div>
     <div class="step-item" id="step-ind-4">
-      <div class="step-num">5</div><span>Estimation</span>
+      <div class="step-num">6</div><span>Estimation</span>
     </div>
   </div>
 
@@ -428,15 +432,35 @@ nav {
     </div>
   </div>
 
+  <!-- STEP 2.5 : Modèle -->
+  <div class="step-card" id="step-25">
+    <div class="step-label">Étape 4 sur 6</div>
+    <div class="step-title">Quel modèle ?</div>
+    <div class="recap-chips" id="s25-recap"></div>
+    <div class="brand-grid" id="model-grid"></div>
+    <div id="other-model-wrap" style="display:none;flex-direction:row;gap:0.5rem;align-items:center;margin-top:0.8rem;">
+      <input id="other-model-input" type="text" placeholder="Entrez votre modèle…"
+        style="flex:1;border:1.5px solid var(--gray2);border-radius:12px;padding:0.75rem 1rem;font-family:'Outfit',sans-serif;font-size:0.9rem;color:var(--black);background:var(--white);outline:none;"
+        onfocus="this.style.borderColor='var(--black)'" onblur="this.style.borderColor='var(--gray2)'" onkeydown="if(event.key==='Enter')confirmModel()">
+      <button onclick="confirmModel()" style="background:var(--red);color:#fff;border:none;border-radius:50px;padding:0.65rem 1.1rem;font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Confirmer →</button>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-nav secondary" onclick="goStep(2)">← Retour</button>
+    </div>
+  </div>
+
   <!-- STEP 3 : Problème -->
   <div class="step-card" id="step-3">
     <div class="step-label">Étape 3 sur 4</div>
     <div class="step-title">Quel est le problème ?</div>
     <div class="recap-chips" id="s3-recap"></div>
     <div class="problem-list" id="problem-list"></div>
-    <input class="other-input" id="other-input" type="text" placeholder="Autre problème ? Décrivez-le ici…" style="display:none;">
+    <div id="other-input-wrap" style="display:none;flex-direction:row;gap:0.5rem;align-items:center;margin-top:0.8rem;">
+      <input class="other-input" id="other-input" type="text" placeholder="Décrivez votre problème…" style="flex:1;margin-top:0;" onkeydown="if(event.key==='Enter')confirmOther()">
+      <button onclick="confirmOther()" style="background:var(--red);color:#fff;border:none;border-radius:50px;padding:0.65rem 1.1rem;font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Confirmer →</button>
+    </div>
     <div class="nav-btns">
-      <button class="btn-nav secondary" onclick="goStep(2)">← Retour</button>
+      <button class="btn-nav secondary" onclick="goStep(25)">← Retour</button>
     </div>
   </div>
 
@@ -454,6 +478,7 @@ nav {
       </div>
       <div class="result-row"><span class="label">Appareil</span><span class="value" id="res-type">—</span></div>
       <div class="result-row"><span class="label">Marque</span><span class="value" id="res-brand">—</span></div>
+      <div class="result-row"><span class="label">Modèle</span><span class="value" id="res-model">—</span></div>
       <div class="result-row"><span class="label">Problème</span><span class="value" id="res-problem">—</span></div>
       <div class="result-row"><span class="label">Délai estimé</span><span class="value" id="res-delay">—</span></div>
       <div class="estimate-box">
@@ -527,20 +552,92 @@ const PROBLEMS = {
   ]
 };
 
+
+// ── MODELS ──
+const MODELS = {
+  'Apple iPhone':       ['iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16','iPhone 15 Pro Max','iPhone 15 Pro','iPhone 15','iPhone 14 Pro Max','iPhone 14 Pro','iPhone 14','iPhone 13 Pro Max','iPhone 13 Pro','iPhone 13','iPhone 12 Pro Max','iPhone 12 Pro','iPhone 12','iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone XS Max','iPhone XS','iPhone XR','iPhone X','iPhone SE (3ème gén.)','iPhone SE (2ème gén.)','iPhone 8 Plus','iPhone 8','iPhone 7 Plus','iPhone 7','Autre modèle'],
+  'Samsung':            ['Galaxy S25 Ultra','Galaxy S25+','Galaxy S25','Galaxy S24 Ultra','Galaxy S24+','Galaxy S24','Galaxy S23 Ultra','Galaxy S23','Galaxy S22 Ultra','Galaxy S22','Galaxy S21','Galaxy S20','Galaxy A55','Galaxy A54','Galaxy A53','Galaxy A35','Galaxy A34','Galaxy A25','Galaxy A15','Galaxy A14','Galaxy A05','Galaxy M54','Galaxy M34','Galaxy Note 20 Ultra','Galaxy Note 20','Galaxy Z Fold 6','Galaxy Z Flip 6','Autre modèle'],
+  'Huawei':             ['P60 Pro','P50 Pro','P50','P40 Pro','P40','P30 Pro','P30','P20 Pro','P20','Mate 60 Pro','Mate 50 Pro','Mate 40 Pro','Nova 11','Nova 10','Nova 9','Y90','Y70','Y60','Autre modèle'],
+  'Xiaomi':             ['Xiaomi 14 Ultra','Xiaomi 14 Pro','Xiaomi 14','Xiaomi 13 Ultra','Xiaomi 13 Pro','Xiaomi 13','Redmi Note 13 Pro+','Redmi Note 13 Pro','Redmi Note 13','Redmi Note 12 Pro','Redmi Note 12','Redmi Note 11','Redmi Note 10','Redmi 13C','Redmi 12','Redmi 12C','POCO X6 Pro','POCO X5 Pro','POCO F5','POCO M5','Autre modèle'],
+  'OnePlus':            ['OnePlus 12','OnePlus 11','OnePlus 10 Pro','OnePlus 9 Pro','OnePlus 9','OnePlus Nord 4','OnePlus Nord CE 4','OnePlus Nord 3','OnePlus Nord 2T','OnePlus Nord CE 3','Autre modèle'],
+  'Oppo':               ['Find X7 Ultra','Find X6 Pro','Reno 12 Pro','Reno 11 Pro','Reno 10 Pro','Reno 8 Pro','Reno 8','A98','A78','A58','A38','A18','Autre modèle'],
+  'Sony Xperia':        ['Xperia 1 VI','Xperia 1 V','Xperia 5 V','Xperia 5 IV','Xperia 10 VI','Xperia 10 V','Xperia 10 IV','Autre modèle'],
+  'Motorola':           ['Edge 50 Ultra','Edge 50 Pro','Edge 50','Moto G85','Moto G84','Moto G54','Moto G34','Moto G24','Moto G14','Razr 50 Ultra','Razr 40 Ultra','Autre modèle'],
+  'Honor':              ['Honor Magic 6 Pro','Honor 200 Pro','Honor 200','Honor 90 Pro','Honor 90','Honor 70','Honor X9b','Honor X8b','Honor X7b','Autre modèle'],
+  'Apple iPad':         ['iPad Pro 13" M4','iPad Pro 11" M4','iPad Air 13" M2','iPad Air 11" M2','iPad 10ème gén.','iPad 9ème gén.','iPad mini 7','iPad mini 6','Autre modèle'],
+  'Samsung Galaxy Tab': ['Galaxy Tab S9 Ultra','Galaxy Tab S9+','Galaxy Tab S9','Galaxy Tab S9 FE','Galaxy Tab A9+','Galaxy Tab A9','Galaxy Tab A8','Galaxy Tab A7 Lite','Autre modèle'],
+  'Huawei MatePad':     ['MatePad Pro 13.2"','MatePad Pro 11"','MatePad 11.5"','MatePad SE 11"','Autre modèle'],
+  'Lenovo Tab':         ['Tab P12 Pro','Tab P11 Pro','Tab P11','Tab M10 Plus','Tab M9','Tab M8','Autre modèle'],
+  'Amazon Fire':        ['Fire Max 11','Fire HD 10 Plus','Fire HD 10','Fire HD 8 Plus','Fire HD 8','Fire 7','Autre modèle'],
+  'Apple MacBook':      ['MacBook Pro 16" M4','MacBook Pro 14" M4','MacBook Pro 16" M3','MacBook Pro 14" M3','MacBook Air 15" M3','MacBook Air 13" M3','MacBook Pro 13" M2','MacBook Air M2','MacBook Air M1','MacBook Pro 13" Intel','Autre modèle'],
+  'Dell':               ['XPS 15','XPS 13','Inspiron 15','Inspiron 14','Inspiron 13','Latitude 15','Latitude 14','Vostro 15','Vostro 14','Alienware m18','G15','G16','Autre modèle'],
+  'HP':                 ['Spectre x360 14','Envy x360 15','Envy x360 13','Pavilion 15','Pavilion 14','EliteBook 840','ProBook 450','Omen 16','Omen 15','Victus 16','Victus 15','Autre modèle'],
+  'Lenovo':             ['ThinkPad X1 Carbon','ThinkPad T14','ThinkPad E14','IdeaPad 5 Pro 16"','IdeaPad 5 15"','IdeaPad 3 15"','Yoga 9i','Yoga 7i','Legion Pro 7','Legion 5 Pro','Legion 5','Autre modèle'],
+  'Asus':               ['ZenBook Pro 14','ZenBook 14','VivoBook 15','VivoBook 14','ExpertBook B5','ProArt Studiobook','ROG Zephyrus G14','ROG Strix G15','TUF Gaming A15','TUF Gaming F15','Autre modèle'],
+  'Acer':               ['Swift X 14','Swift Go 14','Aspire 5','Aspire 3','Extensa 15','TravelMate P2','Nitro 5','Predator Helios 16','Predator Helios 300','Autre modèle'],
+  'MSI':                ['Prestige 14 AI+','Modern 15','Modern 14','Creator Z16','Katana 15','GF63 Thin','GP76 Leopard','Titan GT77','Stealth 15M','Autre modèle'],
+  'Microsoft Surface':  ['Surface Pro 11','Surface Pro 10','Surface Laptop 6','Surface Laptop 5','Surface Laptop Go 3','Surface Book 3','Surface Studio 2+','Autre modèle'],
+};
+
+function buildModels() {
+  const grid = document.getElementById('model-grid');
+  const recap = document.getElementById('s25-recap');
+  const wrap = document.getElementById('other-model-wrap');
+  recap.innerHTML = `<div class="recap-chip">${state.typeIcon} <strong>${state.typeLabel}</strong></div><div class="recap-chip">🏷️ <strong>${state.brand}</strong></div>`;
+  grid.innerHTML = '';
+  wrap.style.display = 'none';
+  document.getElementById('other-model-input').value = '';
+
+  const models = MODELS[state.brand] || ['Autre modèle'];
+  models.forEach(function(m) {
+    const btn = document.createElement('div');
+    btn.className = 'brand-btn';
+    btn.textContent = m;
+    if (m === state.model) btn.classList.add('selected');
+    btn.onclick = function() { selectModel(m, btn); };
+    grid.appendChild(btn);
+  });
+}
+
+function selectModel(model, el) {
+  document.querySelectorAll('#model-grid .brand-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  if (model === 'Autre modèle') {
+    document.getElementById('other-model-wrap').style.display = 'flex';
+    document.getElementById('other-model-input').focus();
+  } else {
+    state.model = model;
+    setTimeout(function() { buildProblems(); goStep(3); }, 200);
+  }
+}
+
+function confirmModel() {
+  const val = document.getElementById('other-model-input').value.trim();
+  if (!val) return;
+  state.model = val;
+  buildProblems(); goStep(3);
+}
+
 // ── STATE ──
-let state = { clientName:'', clientEmail:'', type: null, typeLabel: null, typeIcon: null, brand: null, problem: null, problemData: null, otherText: '' };
+let state = { clientName:'', clientEmail:'', type: null, typeLabel: null, typeIcon: null, brand: null, model: null, problem: null, problemData: null, otherText: '' };
 
 // ── NAVIGATION ──
+// Step order: 0, 1, 2, 25, 3, 4
+const STEP_ORDER = [0, 1, 2, 25, 3, 4];
+const STEP_IND   = [0, 1, 2, 25, 3, 4];
+
 function goStep(n) {
   document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
   document.getElementById('step-' + n).classList.add('active');
-  for (let i = 0; i <= 4; i++) {
-    const el = document.getElementById('step-ind-' + i);
-    if (!el) continue;
+  const pos = STEP_ORDER.indexOf(n);
+  STEP_IND.forEach(function(ind) {
+    const el = document.getElementById('step-ind-' + ind);
+    if (!el) return;
+    const indPos = STEP_ORDER.indexOf(ind);
     el.classList.remove('active','done');
-    if (i < n) el.classList.add('done');
-    else if (i === n) el.classList.add('active');
-  }
+    if (indPos < pos) el.classList.add('done');
+    else if (ind === n) el.classList.add('active');
+  });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -586,7 +683,7 @@ function selectBrand(brand, el) {
   state.brand = brand;
   document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
-  setTimeout(() => { buildProblems(); goStep(3); }, 200);
+  setTimeout(() => { buildModels(); goStep(25); }, 200);
 }
 
 // ── STEP 3: Problems ──
@@ -594,9 +691,7 @@ function buildProblems() {
   const list = document.getElementById('problem-list');
   const recap = document.getElementById('s3-recap');
   const otherInput = document.getElementById('other-input');
-  recap.innerHTML = `
-    <div class="recap-chip">${state.typeIcon} <strong>${state.typeLabel}</strong></div>
-    <div class="recap-chip">🏷️ <strong>${state.brand}</strong></div>`;
+  recap.innerHTML = `<div class="recap-chip">${state.typeIcon} <strong>${state.typeLabel}</strong></div><div class="recap-chip">🏷️ <strong>${state.brand}</strong></div><div class="recap-chip">📱 <strong>${state.model || ''}</strong></div>`;
   list.innerHTML = '';
   otherInput.style.display = 'none';
 
@@ -622,11 +717,13 @@ function selectProblem(p, el) {
   el.classList.add('selected');
   const otherInput = document.getElementById('other-input');
   if (p.name === 'Autre problème') {
-    otherInput.style.display = 'block';
+    var wrap = document.getElementById('other-input-wrap');
+    wrap.style.display = 'flex';
     otherInput.focus();
-    otherInput.oninput = () => { state.otherText = otherInput.value; };
+    otherInput.oninput = function() { state.otherText = otherInput.value; };
   } else {
-    otherInput.style.display = 'none';
+    document.getElementById('other-input-wrap').style.display = 'none';
+  document.getElementById('other-model-wrap').style.display = 'none';
     state.otherText = '';
     setTimeout(() => { buildResult(); goStep(4); }, 250);
   }
@@ -641,6 +738,8 @@ function buildResult() {
   document.getElementById('res-title').textContent = `${state.typeLabel} ${state.brand}`;
   document.getElementById('res-type').textContent = state.typeLabel;
   document.getElementById('res-brand').textContent = state.brand;
+  var modelEl = document.getElementById('res-model');
+  if (modelEl) modelEl.textContent = state.model || '—';
   document.getElementById('res-problem').textContent = problemLabel;
   document.getElementById('res-delay').textContent = p.delay;
   document.getElementById('res-price').textContent = p.range;
@@ -656,6 +755,7 @@ function buildResult() {
     client_email: state.clientEmail,
     device_type:  state.typeLabel,
     brand:        state.brand,
+    model:        state.model || 'Non précisé',
     problem:      problemLabel,
     price_range:  p.range,
     delay:        p.delay,
@@ -687,19 +787,29 @@ function buildResult() {
 
 // ── CONFIRM OTHER ──
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && state.problem === 'Autre problème' && state.otherText.trim()) {
+  if (e.key === 'Enter' && state.problem === 'Autre problème' && document.getElementById('other-input').value.trim()) {
     buildResult(); goStep(4);
   }
 });
 
+function confirmOther() {
+  var val = document.getElementById('other-input').value.trim();
+  if (!val) return;
+  state.otherText = val;
+  buildResult();
+  goStep(4);
+}
+
 function resetSim() {
-  state = { clientName:'', clientEmail:'', type:null, typeLabel:null, typeIcon:null, brand:null, problem:null, problemData:null, otherText:'' };
+  // Keep client name + email — no need to re-enter
+  var savedName  = state.clientName;
+  var savedEmail = state.clientEmail;
+  state = { clientName: savedName, clientEmail: savedEmail, type:null, typeLabel:null, typeIcon:null, brand:null, model:null, problem:null, problemData:null, otherText:'' };
   document.getElementById('other-input').value = '';
-  document.getElementById('other-input').style.display = 'none';
-  document.getElementById('input-name').value = '';
-  document.getElementById('input-email').value = '';
+  document.getElementById('other-input-wrap').style.display = 'none';
+  document.getElementById('other-model-wrap').style.display = 'none';
   document.querySelectorAll('.option-btn,.brand-btn,.problem-item').forEach(el => el.classList.remove('selected'));
-  goStep(0);
+  goStep(1); // Skip step 0 — coordinates already saved
 }
 </script>
 </body>
